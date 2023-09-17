@@ -11,7 +11,7 @@ export const useTodosData = () => {
 
 export const useTodosDispatch = () => {
     const todosDispatch = useContext(TodosDispatchContext)
-
+    
     if (todosDispatch === undefined) throw new Error ("should be inside wrapper")
 
     return todosDispatch

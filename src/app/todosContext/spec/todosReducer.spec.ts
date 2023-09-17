@@ -1,5 +1,5 @@
 import { TodoList } from "../../types";
-import { addTasks, addTodo, editTodo, removeTodo, todosListReducer } from "../todosReducer";
+import { addTasks, addTodo, editTodo, removeTodo, moveToEnd, todosListReducer } from "../todosReducer";
 
 import { describe, it, expect } from "vitest";
 
@@ -52,6 +52,36 @@ const todoListManyItems: TodoList = [
         ]
     },
 ]
+
+const todoListTooManyItems: TodoList = [
+    {
+        title: "First",
+        isCompleted: false,
+        tasksTodo: []
+    },
+    {
+        title: "Second",
+        isCompleted: true,
+        tasksTodo: [
+            {
+                content: "Second title item",
+                isCompleted: false,
+                title: "Second sub"
+            },
+            {
+                content: "another sub title",
+                isCompleted: true,
+                title: "Another sub"
+            },
+        ]
+    },
+    {
+        title: "Third",
+        isCompleted: true,
+        tasksTodo: []
+    },
+]
+
 
 describe("Todos List reducer function", () => {
 
@@ -252,5 +282,38 @@ describe("Todos List reducer function", () => {
             },
         ])
 
+    })
+
+    it("Should move item to end", () => {
+        const actionMove = moveToEnd("First")
+        expect(todosListReducer(todoListOneItem, actionMove)).toEqual(todoListOneItem)
+        expect(todosListReducer(todoListTooManyItems, actionMove)).toEqual([
+            {
+                title: "Second",
+                isCompleted: true,
+                tasksTodo: [
+                    {
+                        content: "Second title item",
+                        isCompleted: false,
+                        title: "Second sub"
+                    },
+                    {
+                        content: "another sub title",
+                        isCompleted: true,
+                        title: "Another sub"
+                    },
+                ]
+            },
+            {
+                title: "Third",
+                isCompleted: true,
+                tasksTodo: []
+            },
+            {
+                title: "First",
+                isCompleted: false,
+                tasksTodo: []
+            },
+        ])
     })
 })

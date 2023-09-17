@@ -19,4 +19,14 @@ export type TodoItemWithPartialActions = {
       ? Array<Partial<TodoItemPiece>>
       : TodoItem[K];
   };
+
+export interface InsetCSS {
+    top?: number;
+    left?: number;
+    right?: number;
+    bottom?: number;
+}
+export interface WithClassName {
+    cn?: string;
+}
   

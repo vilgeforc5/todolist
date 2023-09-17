@@ -1,4 +1,4 @@
-import { ActionAddTasks, ActionAddTodo, ActionEditTodo, ActionRemoveTodo, TodoListReducer } from "./todosReducer.types";
+import { ActionAddTasks, ActionAddTodo, ActionEditTodo, ActionMoveToEnd, ActionRemoveTodo, TodoListReducer } from "./todosReducer.types";
 import { TodoActions } from "./todosReducer.types";
 
 export const addTodo: ActionAddTodo = (todo) => {
@@ -33,6 +33,15 @@ export const addTasks: ActionAddTasks = (addedTasks, id) => {
         payload: {
             id,
             tasksToAdd: addedTasks
+        }
+    })
+}
+
+export const moveToEnd: ActionMoveToEnd = (id) => {
+    return ({
+        type: TodoActions.MOVE_TODO_TO_END,
+        payload: {
+            id
         }
     })
 }
@@ -104,6 +113,15 @@ export const todosListReducer: TodoListReducer = (prevState, action) => {
                         ]
                 }
             })
+        }
+
+        case TodoActions.MOVE_TODO_TO_END: {
+            const indexTodo = prevState.findIndex(todo => todo.title === action.payload.id);
+            if (indexTodo !== -1) {
+                const element = prevState.splice(indexTodo, 1)[0];
+                prevState.push(element);
+              }
+              return [...prevState];
         }
     }
 }
