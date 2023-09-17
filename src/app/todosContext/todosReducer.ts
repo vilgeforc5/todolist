@@ -1,4 +1,4 @@
-import { ActionAddTasks, ActionAddTodo, ActionMoveToEnd, ActionRemoveTodo, ActionToggleTaskCompleted, TodoListReducer } from "./todosReducer.types";
+import { ActionAddTasks, ActionAddTodo, ActionEditTodo, ActionMoveToEnd, ActionRemoveTodo, ActionRemoveTodoTask, ActionToggleTaskCompleted, TodoListReducer } from "./todosReducer.types";
 import { TodoActions } from "./todosReducer.types";
 
 export const addTodo: ActionAddTodo = (todo) => {
@@ -47,6 +47,20 @@ export const toggleCompletion: ActionToggleTaskCompleted = ({taskTitle, todoTitl
 
 }
 
+export const editTodo: ActionEditTodo = (todoChanges) => {
+    return {
+        type: TodoActions.EDIT_TODO,
+        payload: todoChanges
+    }
+}
+
+export const removeTask: ActionRemoveTodoTask = (tasksDelete) => {
+    return {
+        type: TodoActions.REMOVE_TODO_TASK,
+        payload: tasksDelete
+    }
+}
+
 export const todosListReducer: TodoListReducer = (prevState, action) => {
     switch (action.type) {
         case TodoActions.ADD_TODO: {
@@ -61,7 +75,6 @@ export const todosListReducer: TodoListReducer = (prevState, action) => {
         }
 
         case TodoActions.ADD_TODO_TASK: {
-
             return prevState.map(todoItem => {
                 if (todoItem.title !== action.payload.id) return todoItem
                 return {
@@ -97,12 +110,43 @@ export const todosListReducer: TodoListReducer = (prevState, action) => {
                     ...todo,
                     tasksTodo: todo.tasksTodo.map(task => {
                         if (task.title !== taskTitle) return task
-                        console.log(123)
-
                         return ({
                             ...task,
                             isCompleted: !task.isCompleted
                         })
+                    })
+                }
+            })
+        }
+
+        case TodoActions.EDIT_TODO: {
+            return prevState.map(todo => {
+                if (todo.title !== action.payload.prevTodoTitle) return todo
+                return {
+                    title: action.payload.newTitle || todo.title,
+                    tasksTodo: todo.tasksTodo.map(task => {
+                        const foundChangeTask = action.payload.tasksTodo?.find(taskEdited => taskEdited.title == task.title)
+                        if (foundChangeTask === undefined) return task
+                        return ({
+                            title: foundChangeTask.newTitle || task.title,
+                            isCompleted: task.isCompleted,
+                        })
+                    })
+                }
+            })
+        }
+
+        case TodoActions.REMOVE_TODO_TASK: {
+            return prevState.map(todo => {
+                if (todo.title !== action.payload.todoName) return todo
+                return {
+                    ...todo,
+                    tasksTodo: todo.tasksTodo.filter(task => {
+                        const taskFoundIndex = action.payload.taskDelete.findIndex(taskDel => taskDel === task.title)
+                        if (taskFoundIndex !== -1) {
+                            return false
+                        }
+                        return true
                     })
                 }
             })

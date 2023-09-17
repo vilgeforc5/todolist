@@ -1,9 +1,7 @@
 interface TodoItemPiece {
     title: string;
-    content?: string;
     isCompleted: boolean;
 }
-
 
 export interface  TodoItem  {
     title: string;

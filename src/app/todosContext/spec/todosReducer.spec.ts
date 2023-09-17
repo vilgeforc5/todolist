@@ -1,5 +1,5 @@
 import { TodoList } from "../../types";
-import { addTasks, addTodo, removeTodo, moveToEnd, todosListReducer, toggleCompletion } from "../todosReducer";
+import { addTasks, addTodo, removeTodo, moveToEnd, todosListReducer, toggleCompletion, editTodo, removeTask } from "../todosReducer";
 
 import { describe, it, expect } from "vitest";
 
@@ -18,7 +18,6 @@ const todoListTwoItems: TodoList = [
     {
         title: "Second",
         tasksTodo: [{
-            content: "Second title item",
             isCompleted: false,
             title: "Second sub"
         }]
@@ -35,12 +34,10 @@ const todoListManyItems: TodoList = [
         title: "Second",
         tasksTodo: [
             {
-                content: "Second title item",
                 isCompleted: false,
                 title: "Second sub"
             },
             {
-                content: "another sub title",
                 isCompleted: true,
                 title: "Another sub"
             },
@@ -57,12 +54,10 @@ const todoListTooManyItems: TodoList = [
         title: "Second",
         tasksTodo: [
             {
-                content: "Second title item",
                 isCompleted: false,
                 title: "Second sub"
             },
             {
-                content: "another sub title",
                 isCompleted: true,
                 title: "Another sub"
             },
@@ -111,7 +106,6 @@ describe("Todos List reducer function", () => {
     it("Should add todo task", () => {
         const addOneTask = addTasks([{
             title: "My task",
-            content: "My content",
             isCompleted: false
         }], "First")
 
@@ -119,7 +113,6 @@ describe("Todos List reducer function", () => {
             title: "First",
             tasksTodo: [{
                 title: "My task",
-                content: "My content",
                 isCompleted: false
             }]
         },
@@ -127,7 +120,6 @@ describe("Todos List reducer function", () => {
 
         const addOneTaskSecondKey = addTasks([{
             title: "My task",
-            content: "My content",
             isCompleted: false
         }], "Second")
 
@@ -140,19 +132,16 @@ describe("Todos List reducer function", () => {
                 title: "Second",
                 tasksTodo: [
                     {
-                        content: "Second title item",
                         isCompleted: false,
                         title: "Second sub"
                     },
                     {
-                        content: "another sub title",
                         isCompleted: true,
                         title: "Another sub"
                     },
                     {
 
                         title: "My task",
-                        content: "My content",
                         isCompleted: false
                     }
                 ]
@@ -161,7 +150,6 @@ describe("Todos List reducer function", () => {
 
         const addOneTaskOverwrite = addTasks([{
             title: "Another sub",
-            content: "another sub title added",
             isCompleted: false
         }], "Second")
 
@@ -174,13 +162,11 @@ describe("Todos List reducer function", () => {
                 title: "Second",
                 tasksTodo: [
                     {
-                        content: "Second title item",
                         isCompleted: false,
                         title: "Second sub"
                     },
                     {
                         title: "Another sub",
-                        content: "another sub title added",
                         isCompleted: false
                     }
                 ]
@@ -197,12 +183,10 @@ describe("Todos List reducer function", () => {
                 title: "Second",
                 tasksTodo: [
                     {
-                        content: "Second title item",
                         isCompleted: false,
                         title: "Second sub"
                     },
                     {
-                        content: "another sub title",
                         isCompleted: true,
                         title: "Another sub"
                     },
@@ -220,7 +204,7 @@ describe("Todos List reducer function", () => {
     })
 
     it("Should toggle todo task completion", () => {
-        const actionMove = toggleCompletion({taskTitle: "Second sub", todoTitle: "Second"})
+        const actionMove = toggleCompletion({ taskTitle: "Second sub", todoTitle: "Second" })
 
         expect(todosListReducer(todoListTwoItems, actionMove)).toEqual([
             {
@@ -230,14 +214,54 @@ describe("Todos List reducer function", () => {
             {
                 title: "Second",
                 tasksTodo: [{
-                    content: "Second title item",
                     isCompleted: true,
                     title: "Second sub"
                 }]
             },
-        
         ])
+    })
 
+    it("Should edit todo item", () => {
+        const editAction = editTodo({
+            prevTodoTitle: "Second",
+            newTitle: "Second new",
+            tasksTodo: [{
+                title: "Second sub",
+                newTitle: "Second sub new",
+            }]
+        })
+
+        expect(todosListReducer(todoListTwoItems, editAction)).toEqual([
+            {
+                title: "First",
+                tasksTodo: []
+            },
+            {
+                title: "Second new",
+                tasksTodo: [{
+                    isCompleted: false,
+                    title: "Second sub new"
+                }]
+            },
+        ])
+    })
+
+    it("Should delete todo tasks", () => {
+        const deleteTasks = removeTask({
+            todoName: "Second",
+            taskDelete: ["Second sub", "Another sub"]
+        })
+        expect(todosListReducer(todoListManyItems, deleteTasks)).toEqual([
+            {
+                title: "First",
+                tasksTodo: []
+            },
+            {
+                title: "Second",
+                tasksTodo: [
+                ]
+            },
+        ])
     })
 
 })

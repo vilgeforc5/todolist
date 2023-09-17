@@ -1,8 +1,9 @@
 import { ReactNode, createContext, useReducer } from "react";
 import { todosListReducer } from "./todosReducer";
 import { ActionTypes } from "./todosReducer.types";
+import { TodoList } from "../types";
 
-const initialTodos = [
+const initialTodos: TodoList = [
     {
         title: "Третий тодо!",
         tasksTodo: [
@@ -21,7 +22,6 @@ const initialTodos = [
             },
             {
                 title: "Потестисть",
-                content: "течт",
                 isCompleted: false
             }
         ]
@@ -35,7 +35,6 @@ const initialTodos = [
             },
             {
                 title: "Потестисть фичи",
-                content: "можно редактировать тудушки",
                 isCompleted: false
             }
         ]

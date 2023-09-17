@@ -1,7 +1,10 @@
-export const TodoCardEditingSection = ({ cn, stopEditing }: { cn?: string, stopEditing: () => void, }) => {
+export const TodoCardEditingSection = ({ cn, stopEditing, commitEditing }: { cn?: string, stopEditing: () => void, commitEditing: () => void }) => {
     return (
         <div className={`${cn} flex gap-x-3`}>
-            <div className="p-1 px-2 bg-zinc-200 flex justify-center items-center gap-x-1.5 cursor-pointer group/svg">
+            <div
+                onClick={() => { commitEditing(); stopEditing() }}
+                className="p-1 px-2 bg-zinc-200 flex justify-center items-center gap-x-1.5 cursor-pointer group/svg"
+            >
                 <svg
                     className="w-6 h-6 inline-block text-green-500 group-hover/svg:rotate-180 transition-all" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
                 >

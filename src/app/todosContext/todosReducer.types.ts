@@ -1,11 +1,13 @@
-import { TodoItem, TodoList } from "../types";
+import { ArrayElement, TodoItem, TodoList } from "../types";
 
 export enum TodoActions {
     ADD_TODO="ADD_TODO",
     REMOVE_TODO="REMOVE_TODO",
     ADD_TODO_TASK="ADD_TODO_TASK",
     MOVE_TODO_TO_END="MOVE_TODO_TO_END",
-    TOGGLE_TASK_COMPLETE="TOGGLE_TASK_COMPLETE"
+    TOGGLE_TASK_COMPLETE="TOGGLE_TASK_COMPLETE",
+    EDIT_TODO="EDIT_TODO",
+    REMOVE_TODO_TASK="REMOVE_TODO_TASK"
 }
 
 interface PayloadAction<T extends keyof typeof TodoActions, P> {
@@ -31,6 +33,17 @@ interface SetTaskCompletedPayload {
     taskTitle: string;
 }
 
+interface EditTodoPayload {
+    newTitle?: string;
+    prevTodoTitle:string;
+    tasksTodo?: Array<ArrayElement<TodoItem["tasksTodo"]> & {newTitle?: string}>
+}
+
+interface RemoveTodoTaskPayload {
+    todoName: string;
+    taskDelete: string[];
+}
+
 export interface ActionAddTodo {
     (todo: TodoItem) : PayloadAction<TodoActions.ADD_TODO , AddTodoPayload>
 }
@@ -49,9 +62,16 @@ export interface ActionAddTasks {
 
 export interface ActionToggleTaskCompleted {
     ({todoTitle, taskTitle} : SetTaskCompletedPayload) : PayloadAction<TodoActions.TOGGLE_TASK_COMPLETE, SetTaskCompletedPayload>
+}
+
+export interface ActionRemoveTodoTask {
+    ({todoName, taskDelete} : RemoveTodoTaskPayload) : PayloadAction<TodoActions.REMOVE_TODO_TASK, RemoveTodoTaskPayload>
 
 }
 
+export interface ActionEditTodo {
+    ({prevTodoTitle, newTitle, tasksTodo} : EditTodoPayload) : PayloadAction<TodoActions.EDIT_TODO, EditTodoPayload>
+}
 
 export type ActionTypes = 
     | ReturnType<ActionAddTodo>
@@ -59,6 +79,8 @@ export type ActionTypes =
     | ReturnType<ActionAddTasks>
     | ReturnType<ActionMoveToEnd>
     | ReturnType<ActionToggleTaskCompleted>
+    | ReturnType<ActionEditTodo>
+    | ReturnType<ActionRemoveTodoTask>
 
 export interface TodoListReducer {
     (prevState: TodoList, action: ActionTypes) : TodoList;
