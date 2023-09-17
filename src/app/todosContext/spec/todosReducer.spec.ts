@@ -1,12 +1,11 @@
 import { TodoList } from "../../types";
-import { addTasks, addTodo, editTodo, removeTodo, moveToEnd, todosListReducer } from "../todosReducer";
+import { addTasks, addTodo, removeTodo, moveToEnd, todosListReducer, toggleCompletion } from "../todosReducer";
 
 import { describe, it, expect } from "vitest";
 
 const todoListOneItem: TodoList = [
     {
         title: "First",
-        isCompleted: false,
         tasksTodo: []
     },
 ]
@@ -14,12 +13,10 @@ const todoListOneItem: TodoList = [
 const todoListTwoItems: TodoList = [
     {
         title: "First",
-        isCompleted: false,
         tasksTodo: []
     },
     {
         title: "Second",
-        isCompleted: true,
         tasksTodo: [{
             content: "Second title item",
             isCompleted: false,
@@ -32,12 +29,10 @@ const todoListTwoItems: TodoList = [
 const todoListManyItems: TodoList = [
     {
         title: "First",
-        isCompleted: false,
         tasksTodo: []
     },
     {
         title: "Second",
-        isCompleted: true,
         tasksTodo: [
             {
                 content: "Second title item",
@@ -56,12 +51,10 @@ const todoListManyItems: TodoList = [
 const todoListTooManyItems: TodoList = [
     {
         title: "First",
-        isCompleted: false,
         tasksTodo: []
     },
     {
         title: "Second",
-        isCompleted: true,
         tasksTodo: [
             {
                 content: "Second title item",
@@ -77,7 +70,6 @@ const todoListTooManyItems: TodoList = [
     },
     {
         title: "Third",
-        isCompleted: true,
         tasksTodo: []
     },
 ]
@@ -93,7 +85,6 @@ describe("Todos List reducer function", () => {
         expect(todosListReducer(todoListTwoItems, actionRemoveSecond)).toEqual([
             {
                 title: "First",
-                isCompleted: false,
                 tasksTodo: []
             },
         ])
@@ -102,99 +93,18 @@ describe("Todos List reducer function", () => {
     it("Should add todo", () => {
         const actionAddItem = addTodo({
             title: "Added",
-            isCompleted: false,
             tasksTodo: []
         })
 
         expect(todosListReducer(todoListOneItem, actionAddItem)).toEqual([
             {
                 title: "First",
-                isCompleted: false,
                 tasksTodo: []
             },
             {
                 title: "Added",
-                isCompleted: false,
                 tasksTodo: []
             }
-        ])
-    })
-
-    it("Should edit todo", () => {
-        const actionEditTodoTitle = editTodo({
-            title: "New title"
-        }, "First")
-
-        expect(todosListReducer(todoListOneItem, actionEditTodoTitle)).toEqual([{
-            title: "New title",
-            isCompleted: false,
-            tasksTodo: []
-        }])
-
-        const actionEditTodoCompleted = editTodo({
-            isCompleted: false,
-            tasksTodo: [{
-                title: "Second sub",
-                content: "Second title item modified"
-            }]
-        }, "Second")
-
-        expect(todosListReducer(todoListTwoItems, actionEditTodoCompleted)).toEqual([
-            {
-                title: "First",
-                isCompleted: false,
-                tasksTodo: []
-            },
-            {
-                title: "Second",
-                isCompleted: false,
-                tasksTodo: [{
-                    content: "Second title item modified",
-                    isCompleted: false,
-                    title: "Second sub"
-                }]
-            }])
-
-        const actionEditAllMany = editTodo({
-            isCompleted: false,
-            title: "Totally new title",
-            tasksTodo: [
-                {
-                    title: "Second sub",
-                    content: "Modified content",
-                    isCompleted: true,
-
-                },
-                {
-                    title: "Another sub",
-                    content: "Modified another sub",
-                    isCompleted: false,
-                }
-            ]
-        }, "Second")
-
-        expect(todosListReducer(todoListManyItems, actionEditAllMany)).toEqual([
-            {
-                title: "First",
-                isCompleted: false,
-                tasksTodo: []
-            },
-            {
-                title: "Totally new title",
-                isCompleted: false,
-                tasksTodo: [
-                    {
-                        content: "Modified content",
-                        isCompleted: true,
-                        title: "Second sub"
-                    },
-                    {
-                        content: "Modified another sub",
-                        isCompleted: false,
-                        title: "Another sub"
-                    },
-                ]
-            },
         ])
     })
 
@@ -207,7 +117,6 @@ describe("Todos List reducer function", () => {
 
         expect(todosListReducer(todoListOneItem, addOneTask)).toEqual([{
             title: "First",
-            isCompleted: false,
             tasksTodo: [{
                 title: "My task",
                 content: "My content",
@@ -225,12 +134,10 @@ describe("Todos List reducer function", () => {
         expect(todosListReducer(todoListManyItems, addOneTaskSecondKey)).toEqual([
             {
                 title: "First",
-                isCompleted: false,
                 tasksTodo: []
             },
             {
                 title: "Second",
-                isCompleted: true,
                 tasksTodo: [
                     {
                         content: "Second title item",
@@ -261,12 +168,10 @@ describe("Todos List reducer function", () => {
         expect(todosListReducer(todoListManyItems, addOneTaskOverwrite)).toEqual([
             {
                 title: "First",
-                isCompleted: false,
                 tasksTodo: []
             },
             {
                 title: "Second",
-                isCompleted: true,
                 tasksTodo: [
                     {
                         content: "Second title item",
@@ -290,7 +195,6 @@ describe("Todos List reducer function", () => {
         expect(todosListReducer(todoListTooManyItems, actionMove)).toEqual([
             {
                 title: "Second",
-                isCompleted: true,
                 tasksTodo: [
                     {
                         content: "Second title item",
@@ -306,14 +210,34 @@ describe("Todos List reducer function", () => {
             },
             {
                 title: "Third",
-                isCompleted: true,
                 tasksTodo: []
             },
             {
                 title: "First",
-                isCompleted: false,
                 tasksTodo: []
             },
         ])
     })
+
+    it("Should toggle todo task completion", () => {
+        const actionMove = toggleCompletion({taskTitle: "Second sub", todoTitle: "Second"})
+
+        expect(todosListReducer(todoListTwoItems, actionMove)).toEqual([
+            {
+                title: "First",
+                tasksTodo: []
+            },
+            {
+                title: "Second",
+                tasksTodo: [{
+                    content: "Second title item",
+                    isCompleted: true,
+                    title: "Second sub"
+                }]
+            },
+        
+        ])
+
+    })
+
 })

@@ -8,7 +8,6 @@ interface TodoItemPiece {
 export interface  TodoItem  {
     title: string;
     tasksTodo: Array<TodoItemPiece>;
-    isCompleted: boolean;
 } 
 
 export type TodoList = Array<TodoItem>
@@ -30,3 +29,5 @@ export interface WithClassName {
     cn?: string;
 }
   
+export type ArrayElement<ArrayType extends readonly unknown[]> = 
+ArrayType extends readonly (infer ElementType)[] ? ElementType : never;

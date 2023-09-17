@@ -1,6 +1,7 @@
 import { Todos } from './_todos/todos'
 import { TodosAside } from './todosAside/todosAside'
 import { TodosContext } from './todosContext/todosContext'
+  
 export const App = () => {
   return (
     <TodosContext>
@@ -15,3 +16,4 @@ export const App = () => {
     </TodosContext>
   )
 }
+

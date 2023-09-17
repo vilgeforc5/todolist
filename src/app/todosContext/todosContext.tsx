@@ -5,7 +5,6 @@ import { ActionTypes } from "./todosReducer.types";
 const initialTodos = [
     {
         title: "Третий тодо!",
-        isCompleted: false,
         tasksTodo: [
             {
                 title: "Тесттт",
@@ -15,7 +14,6 @@ const initialTodos = [
     },
     {
         title: "ВТОРОЙ ТУДУ!",
-        isCompleted: false,
         tasksTodo: [
             {
                 title: "Привки",
@@ -30,7 +28,6 @@ const initialTodos = [
     },
     {
         title: "Создайте ваш первый todo!",
-        isCompleted: true,
         tasksTodo: [
             {
                 title: "Запустить приложение",
@@ -39,7 +36,7 @@ const initialTodos = [
             {
                 title: "Потестисть фичи",
                 content: "можно редактировать тудушки",
-                isCompleted: true
+                isCompleted: false
             }
         ]
     },

@@ -1,4 +1,4 @@
-import { ActionAddTasks, ActionAddTodo, ActionEditTodo, ActionMoveToEnd, ActionRemoveTodo, TodoListReducer } from "./todosReducer.types";
+import { ActionAddTasks, ActionAddTodo, ActionMoveToEnd, ActionRemoveTodo, ActionToggleTaskCompleted, TodoListReducer } from "./todosReducer.types";
 import { TodoActions } from "./todosReducer.types";
 
 export const addTodo: ActionAddTodo = (todo) => {
@@ -13,16 +13,6 @@ export const removeTodo: ActionRemoveTodo = (id) => {
         type: TodoActions.REMOVE_TODO,
         payload: {
             id
-        }
-    }
-}
-
-export const editTodo: ActionEditTodo = (tasksTodo, id) => {
-    return {
-        type: TodoActions.EDIT_TODO,
-        payload: {
-            id,
-            ...tasksTodo,
         }
     }
 }
@@ -46,6 +36,17 @@ export const moveToEnd: ActionMoveToEnd = (id) => {
     })
 }
 
+export const toggleCompletion: ActionToggleTaskCompleted = ({taskTitle, todoTitle}) => {
+    return {
+        type: TodoActions.TOGGLE_TASK_COMPLETE,
+        payload: {
+            taskTitle,
+            todoTitle
+        }
+    }
+
+}
+
 export const todosListReducer: TodoListReducer = (prevState, action) => {
     switch (action.type) {
         case TodoActions.ADD_TODO: {
@@ -59,48 +60,12 @@ export const todosListReducer: TodoListReducer = (prevState, action) => {
             return [...prevState.filter(todo => todo.title !== action.payload.id)]
         }
 
-        case TodoActions.EDIT_TODO: {
-            return prevState.map(todo => {
-
-                if (action.payload.id.trim().toLowerCase() !== todo.title.trim().toLowerCase())
-                    return todo
-
-                return {
-                    // [object].hasOwnProperty leads to eslint error
-                    title: Object.prototype.hasOwnProperty.call(action.payload, "title") ?
-                        action.payload.title! :
-                        todo.title,
-                    isCompleted: Object.prototype.hasOwnProperty.call(action.payload, "isCompleted") ?
-                        action.payload.isCompleted! :
-                        todo.isCompleted,
-                    tasksTodo: Object.prototype.hasOwnProperty.call(action.payload, "tasksTodo") ?
-                        todo.tasksTodo.map(todoPiece => {
-                            if (action.payload.tasksTodo) {
-                                const editedPiece = action.payload.tasksTodo.find(item => item.title === todoPiece.title)
-
-                                let isCompleted = todoPiece.isCompleted;
-                                if (editedPiece && Object.prototype.hasOwnProperty.call(editedPiece, "isCompleted")) {
-                                    isCompleted = editedPiece.isCompleted!
-                                }
-                                return {
-                                    title: todoPiece.title,
-                                    isCompleted:  isCompleted,
-                                    content: editedPiece?.content || todoPiece.content
-                                }
-                            }
-                            return todoPiece
-                        })
-                        : todo.tasksTodo
-                }
-            })
-        }
-
         case TodoActions.ADD_TODO_TASK: {
+
             return prevState.map(todoItem => {
                 if (todoItem.title !== action.payload.id) return todoItem
                 return {
                     title: todoItem.title,
-                    isCompleted: todoItem.isCompleted,
                     tasksTodo: [
                                 // if task with same title(id)
                             ...todoItem.tasksTodo.filter(task => {
@@ -122,6 +87,25 @@ export const todosListReducer: TodoListReducer = (prevState, action) => {
                 prevState.push(element);
               }
               return [...prevState];
+        }
+
+        case TodoActions.TOGGLE_TASK_COMPLETE: {
+            const {taskTitle, todoTitle} = action.payload
+            return prevState.map(todo => {
+                if (todo.title !== todoTitle) return todo
+                return {
+                    ...todo,
+                    tasksTodo: todo.tasksTodo.map(task => {
+                        if (task.title !== taskTitle) return task
+                        console.log(123)
+
+                        return ({
+                            ...task,
+                            isCompleted: !task.isCompleted
+                        })
+                    })
+                }
+            })
         }
     }
 }

@@ -1,3 +1,4 @@
+import React from "react";
 import { InsetCSS, TodoItem, WithClassName } from "../types";
 
 export interface TodoCardProps extends WithClassName {
@@ -6,5 +7,9 @@ export interface TodoCardProps extends WithClassName {
     zIndex?: number;
     shouldMove: boolean;
     shift?: InsetCSS;
+    editing : {
+        isEditing: boolean;
+        setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+    }
 }
 
