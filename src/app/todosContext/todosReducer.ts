@@ -8,11 +8,11 @@ export const addTodo: ActionAddTodo = (todo) => {
     }
 }
 
-export const removeTodo: ActionRemoveTodo = (id) => {
+export const removeTodos: ActionRemoveTodo = (todos) => {
     return {
-        type: TodoActions.REMOVE_TODO,
+        type: TodoActions.REMOVE_TODOS,
         payload: {
-            id
+            todos
         }
     }
 }
@@ -70,8 +70,12 @@ export const todosListReducer: TodoListReducer = (prevState, action) => {
             ]
         }
 
-        case TodoActions.REMOVE_TODO: {
-            return [...prevState.filter(todo => todo.title !== action.payload.id)]
+        case TodoActions.REMOVE_TODOS: {
+            return prevState.filter(todo => {
+                const foundToDelete = action.payload.todos.findIndex(todoDel => todoDel === todo.title)
+                if (foundToDelete !== -1) return false
+                return true
+            })
         }
 
         case TodoActions.ADD_TODO_TASK: {

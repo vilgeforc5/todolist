@@ -1,39 +1,38 @@
-import { useState } from "react"
-import { TodoCard } from "../_todoCard/todoCard"
-import { TodosContainerProps } from "./todosContainer.types"
+// import { TodoCard } from "../_todoCard/todoCard"
+import { useViewportWidth } from "../hooks/useViewportWidth"
+import { CardTodo } from "../_cardTodo/cardTodo"
+import { TodoList } from "../types";
 
-export const TodosContainer = ({ todosList }: TodosContainerProps) => {
-    const [isTodoEdited, setIsTodoEdited] = useState(false)
-
+export const TodosContainer = ({todosList}:{todosList: TodoList}) => {
+    const { width } = useViewportWidth()
+    const shiftBasis = width < 768 ? 15 : 10;
     return (
-        <div className="relative h-[400px] w-full mt-8">
-            {todosList.map((todo, index) => {
-
-                // determines wether Todo allowed.
-                // 1) if todo is active - restricted
-                // 2) if todo is edited - restricted for all
-                // 3) default - allowed for all todos but active
-                let shouldMove = false
-                if (isTodoEdited) {
-                    shouldMove = false
-                } else {
-                    shouldMove = index !== todosList.length - 1
-                }
-
-                return <TodoCard
-                    shouldMove={shouldMove}
+        <div className="relative h-[350px] lg:h-[400px] w-full mt-8 drop-shadow-xl">
+            {todosList.length >= 1 ? 
+                todosList.map((todo, index) => {
+                return <CardTodo
+                    moving={{
+                        shouldMove: index !== todosList.length - 1,
+                        moveDirection: width < 768 ? "top" : "left"
+                    }}
                     cn={`absolute`}
                     shift={{
-                        top: index * 10,
-                        left: index * 10
+                        right: width > 768 ? shiftBasis * (todosList.length - 1 - index) : undefined,
+                        top: shiftBasis * (todosList.length - 1 - index)
                     }}
-                    isActiveTodo={index === todosList.length - 1}
+                    isActive={index === todosList.length - 1}
                     zIndex={index}
                     key={todo.title}
-                    todoItem={todo}
-                    editing={{ isEditing: isTodoEdited, setIsEditing: setIsTodoEdited }}
+                    data={todo}
                 />
-            })}
+                })
+                :
+                <div className="w-full h-full grid place-items-center bg-slate-50 rounded-lg">
+                    <p className="text-slate-950 text-5xl [text-shadow:_0_2px_0_#7f5ef8]"> 
+                        Здесь мог быть ваш TODO 
+                    </p>
+                </div>
+            }
         </div>
     )
 }
