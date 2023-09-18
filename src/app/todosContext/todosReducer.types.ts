@@ -2,7 +2,7 @@ import { ArrayElement, TodoItem, TodoList } from "../types";
 
 export enum TodoActions {
     ADD_TODO="ADD_TODO",
-    REMOVE_TODO="REMOVE_TODO",
+    REMOVE_TODOS="REMOVE_TODOS",
     ADD_TODO_TASK="ADD_TODO_TASK",
     MOVE_TODO_TO_END="MOVE_TODO_TO_END",
     TOGGLE_TASK_COMPLETE="TOGGLE_TASK_COMPLETE",
@@ -18,7 +18,7 @@ interface PayloadAction<T extends keyof typeof TodoActions, P> {
 interface AddTodoPayload extends TodoItem {}
 
 interface RemoveTodoPayload {
-    id: string;
+    todos: string[];
 }
   
 // type EditTodoPayload = Partial<TodoItemWithPartialActions> & {id: string};
@@ -49,7 +49,7 @@ export interface ActionAddTodo {
 }
 
 export interface ActionRemoveTodo {
-    (id: string) : PayloadAction<TodoActions.REMOVE_TODO, RemoveTodoPayload>
+    (todos: string[]) : PayloadAction<TodoActions.REMOVE_TODOS, RemoveTodoPayload>
 }
 
 export interface ActionMoveToEnd {

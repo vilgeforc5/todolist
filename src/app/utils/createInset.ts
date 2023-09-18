@@ -1,9 +1,10 @@
 import { InsetCSS } from "../types"
 
-export const createInset = (inset: InsetCSS) => {
-    const insetStr = `${inset.top ? inset.top + "px" + " " : "0"}` + 
-                  `${inset.bottom ? inset.bottom + "px" + " " : "0"}` +
-                  `${inset.left ? inset.left + "px" + " " : "0"}` + 
-                  `${inset.right ? inset.right+ "px" + " " : "0"}`
-    return insetStr
+export const createInset = (shift: InsetCSS) => {
+    return {
+        top: shift?.top || "auto",
+        bottom: shift?.bottom || "auto",
+        right: shift?.right || "auto",
+        left: shift?.left || "auto",
+    }
 }

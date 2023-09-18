@@ -1,5 +1,5 @@
 import { TodoList } from "../../types";
-import { addTasks, addTodo, removeTodo, moveToEnd, todosListReducer, toggleCompletion, editTodo, removeTask } from "../todosReducer";
+import { addTasks, addTodo, removeTodos, moveToEnd, todosListReducer, toggleCompletion, editTodo, removeTask } from "../todosReducer";
 
 import { describe, it, expect } from "vitest";
 
@@ -73,16 +73,13 @@ const todoListTooManyItems: TodoList = [
 describe("Todos List reducer function", () => {
 
     it("Should remove todo", () => {
-        const actionRemoveFirst = removeTodo("First")
-        const actionRemoveSecond = removeTodo("Second")
+        const actionRemoveFirst = removeTodos(["First"])
+        const actionRemoveSecond = removeTodos(["First", "Second"])
+        console.log(todosListReducer(todoListOneItem, actionRemoveFirst))
+        console.log(todosListReducer(todoListTwoItems, actionRemoveSecond))
 
         expect(todosListReducer(todoListOneItem, actionRemoveFirst)).toEqual([])
-        expect(todosListReducer(todoListTwoItems, actionRemoveSecond)).toEqual([
-            {
-                title: "First",
-                tasksTodo: []
-            },
-        ])
+        expect(todosListReducer(todoListTwoItems, actionRemoveSecond)).toEqual([])
     })
 
     it("Should add todo", () => {
@@ -103,7 +100,7 @@ describe("Todos List reducer function", () => {
         ])
     })
 
-    it("Should add todo task", () => {
+    it("Should add todo tasks", () => {
         const addOneTask = addTasks([{
             title: "My task",
             isCompleted: false
@@ -228,6 +225,7 @@ describe("Todos List reducer function", () => {
             tasksTodo: [{
                 title: "Second sub",
                 newTitle: "Second sub new",
+                isCompleted: false
             }]
         })
 

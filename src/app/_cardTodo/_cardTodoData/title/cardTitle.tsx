@@ -1,6 +1,6 @@
-import { ReactNode } from "react"
+import { CardTitleProps } from './cardTitle.types'
 
-export const TodoCardTitle = ({ isCompleted, title, cn }: { isCompleted: boolean, title: ReactNode, cn?: string }) => {
+export const CardTitle = ({cn, isCompleted, title}: CardTitleProps) => {
     return (
         <p
             className={`${cn} ${isCompleted ? "line-through text-zinc-800" : "text-zinc-800"}
