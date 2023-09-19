@@ -5,25 +5,12 @@ import { TodoList } from "../types";
 
 const initialTodos: TodoList = [
     {
-        title: "Третий тодо!",
+        title: "Второй!",
         tasksTodo: [
             {
-                title: "Тесттт",
+                title: "Привет",
                 isCompleted: true
             },
-        ]
-    },
-    {
-        title: "ВТОРОЙ ТУДУ!",
-        tasksTodo: [
-            {
-                title: "Привки",
-                isCompleted: true
-            },
-            {
-                title: "Потестисть",
-                isCompleted: false
-            }
         ]
     },
     {
